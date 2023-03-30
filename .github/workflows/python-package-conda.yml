@@ -1,0 +1,47 @@
+name: Test python package with conda environment and pytest
+
+on: [push]
+
+# on:
+#   push:
+#     paths:
+#       - 'requirements_conda.yaml'
+#       - '.github/workflows/run_pytest.yaml'
+
+jobs:
+  create-env:
+    name: ${{ matrix.os }} 
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash -l {0}
+        
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+        
+      - name: create environment with mamba
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          mamba-version: "*"
+          channels: defaults,conda-forge,plotly
+          auto-activate-base: false
+          activate-environment: package_name
+          environment-file: requirements_conda.yaml
+
+      - name: check python path for correct activation of env
+        run: |
+          python -c "import sys; print(sys.executable)"
+          
+      - name: check installed packages
+        run: |
+          mamba env export
+      
+      - name: Unit test with pytest
+        run: |
+          pytest
