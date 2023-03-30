@@ -5,7 +5,7 @@ on: [push]
 # on:
 #   push:
 #     paths:
-#       - 'requirements_conda.yaml'
+#       - 'requirements_conda.yml'
 #       - '.github/workflows/run_pytest.yaml'
 
 jobs:
@@ -32,7 +32,7 @@ jobs:
           channels: defaults,conda-forge,plotly
           auto-activate-base: false
           activate-environment: package_name
-          environment-file: requirements_conda.yaml
+          environment-file: requirements_conda.yml
 
       - name: check python path for correct activation of env
         run: |
